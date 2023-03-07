@@ -1,4 +1,4 @@
-NUM_VERSION = (3, 0, 7)
+NUM_VERSION = (3, 1, 0, "a0")
 
 import os
 import sys

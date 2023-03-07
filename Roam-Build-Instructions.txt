@@ -1,0 +1,16 @@
+Requires:
+	Miniconda3
+	PyCharm
+
+Environment setup - Roam-master:
+	conda install -n Roam-master python=3.11 qgis mock nose pytest pywin32 pyaml raven markdown pytest-cov pillow pandas setuptools pyqt5-sip jinja2 yaml pyyaml cx_freeze mako -c conda-forge -y
+		
+Build instructions:
+	1. Create the conda environment via PyCharm (if you make it via Conda, it doesn't work properly)
+	2. Install all of the above packages
+	3. Install the latest GDAL package - https://gisinternals.com/release.php
+		Download the *-core and the latest win-amd64-py3.xx.msi, where the py version is as close to your environment's python version.
+	4. in PyCharm terminal:
+		conda activate Roam-master
+		.\build.bat build
+		.\build.bat exe

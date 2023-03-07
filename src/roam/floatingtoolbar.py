@@ -26,9 +26,9 @@ class FloatingToolBar(QToolBar):
             if defaultaction:
                 defaultaction.toggle()
             widget = self.parent().widgetForAction(parentaction)
-            x = self.parent().mapToGlobal(widget.pos()).x()
-            y = self.parent().mapToGlobal(widget.pos()).y()
-            newpoint = QPoint(x, y + self.parent().rect().height())
+            x = int(self.parent().mapToGlobal(widget.pos()).x())
+            y = int(self.parent().mapToGlobal(widget.pos()).y())
+            newpoint = QPoint(x, y + int(self.parent().rect().height()))
             # 			if self.orientation() == Qt.Vertical:
             # 				newpoint = QPoint(x, y + self.parent().rect().width())
             self.move(newpoint)

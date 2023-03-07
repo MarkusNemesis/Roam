@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QPointF, QPoint, QRectF
 from PyQt5.QtGui import QFont, QPen, QBrush, QPainterPath, QPainter
-from qgis._core import QgsDistanceArea, QgsProject, GEO_NONE, QgsGeometry, QgsPoint
+from qgis._core import QgsDistanceArea, QgsProject, QgsGeometry, QgsPoint
+from qgis.core import GEO_NONE
 from qgis._gui import QgsRubberBand
 
 import roam.config
@@ -19,7 +20,7 @@ class RubberBand(QgsRubberBand):
         self.font.setBold(True)
 
         self.blackpen = QPen(Qt.black)
-        self.blackpen.setWidth(0.5)
+        self.blackpen.setWidth(1)
         self.whitebrush = QBrush(Qt.white)
         self.unit = self.canvas.mapUnits()
 
@@ -76,7 +77,7 @@ class RubberBand(QgsRubberBand):
         height = rect.size().height()
         m2p = self.canvas.getCoordinateTransform()
         res = m2p.mapUnitsPerPixel()
-        new = 50 / res
+        new = int(50 / res)
         top = rect.topLeft() - QPoint(0, new)
         bottom = rect.bottomRight() + QPoint(new, 0)
         return QRectF(top, bottom)

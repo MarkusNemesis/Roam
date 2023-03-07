@@ -50,8 +50,8 @@ class InfoTool(QgsMapTool):
         rect.setBottom(point.y() + size)
 
         transform = self.canvas.getCoordinateTransform()
-        ll = transform.toMapCoordinates(rect.left(), rect.bottom())
-        ur = transform.toMapCoordinates(rect.right(), rect.top())
+        ll = transform.toMapCoordinates(int(rect.left()), int(rect.bottom()))
+        ur = transform.toMapCoordinates(int(rect.right()), int(rect.top()))
 
         rect = QgsRectangle(ur, ll)
         return rect

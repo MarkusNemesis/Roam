@@ -48,7 +48,7 @@ class HelpPage(helppage_widget, helppage_base):
     def setsize(self):
         width = self.parent().width() * 50 / 100
         self.resize(width, self.parent().height())
-        self.move(self.parent().width() - self.width() - 1, 1)
+        self.move(int(self.parent().width() - self.width() - 1), 1)
 
     def show(self):
         super(HelpPage, self).show()

@@ -58,7 +58,7 @@ class InspectionTool(QgsMapTool):
         searchRadius = (QgsTolerance.toleranceInMapUnits(5, self.layerfrom,
                                                          self.canvas().mapRenderer(), QgsTolerance.Pixels))
 
-        point = self.toMapCoordinates(event.pos())
+        point = self.toMapCoordinates(int(event.pos()))
 
         rect = QgsRectangle()
         rect.setXMinimum(point.x() - searchRadius)

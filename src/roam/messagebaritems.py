@@ -95,7 +95,7 @@ class ClickableMessage(roam.htmlviewer.HtmlViewerWidget):
     def showEvent(self, event):
         self.load_content()
         width = self.parent().geometry().size().width() - self.width() - 20
-        self.move(width, 0)
+        self.move(int(width), 0)
 
 
 class MissingLayerItem(ClickableMessage):

@@ -57,7 +57,7 @@ class BigList(Ui_BigList, QWidget):
         super(BigList, self).show()
 
         if self.centeronparent:
-            width = self.parent().width()
-            height = self.parent().height()
+            width = int(self.parent().width())
+            height = int(self.parent().height())
             self.move(width / 4, 0)
             self.resize(QSize(width / 2, height))

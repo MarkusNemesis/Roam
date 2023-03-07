@@ -228,8 +228,8 @@ class InfoDock(infodock_widget, QWidget):
         Collapse the info panel back to the samller state
         :return:
         """
-        self.resize(self.startwidth, self.parent().height())
-        self.move(self.parent().width() - self.startwidth, 0)
+        self.resize(int(self.startwidth), int(self.parent().height()))
+        self.move(int(self.parent().width() - self.startwidth), 0)
         self.expaned = False
         self.expandAction.setText("Expand Panel")
 

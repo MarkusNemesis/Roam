@@ -12,7 +12,7 @@ pushd %~dp0
 
 SET BASE=%~dp0
 
-call scripts\setenv.bat
+REM call scripts\setenv.bat
 IF "%1"=="" goto build
 GOTO %1
 

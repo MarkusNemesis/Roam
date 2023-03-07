@@ -57,3 +57,6 @@ venv
 htmlcov/
 release/
 /src/roam/log
+
+/src/projects
+*/ui_*.py

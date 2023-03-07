@@ -566,7 +566,7 @@ class StraceRunner(Runner):
             # if strace failed to run, re-throw the exception
             # we can tell this happend if the file is empty
             outfile.seek(0, os.SEEK_END)
-            if outfile.tell() is 0:
+            if outfile.tell() == 0:
                 raise e
             else:
                 # reset the file postion for reading

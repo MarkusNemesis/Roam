@@ -4,10 +4,11 @@ import shutil
 import sys
 from distutils.command.build import build
 from distutils.command.clean import clean
+
 from sys import platform
 
+from cx_Freeze import setup, Executable
 from setuptools import find_packages
-from ext_libs.cx_Freeze import setup, Executable
 
 from scripts.fabricate import run
 
@@ -19,37 +20,65 @@ sys.path.append(os.path.join(curpath, 'src'))
 
 import roam
 
-try:
-    osgeopath = os.environ['OSGEO4W_ROOT']
-except KeyError:
-    osgeopath = r'C:\OSGeo4W'
+# # Markus Mod: Load up the QGIS environment information
+# # set up system paths
+# # necessary imports
+# import os
+# import sys
+# import json
+# import pandas as pd
+
+# qspath = './qgis_sys_paths.csv'
+# # provide the path where you saved this file.
+# paths = pd.read_csv(qspath).paths.tolist()
+# sys.path += paths
+# # set up environment variables
+# qepath = './qgis_env.json'
+# js = json.loads(open(qepath, 'r').read())
+# for k, v in js.items():
+    # os.environ[k] = v
+
+# try:
+    # osgeopath = os.environ['OSGEO4W_ROOT']
+# except KeyError:
+    # osgeopath = r'C:\OSGeo4W'
+# ####
+
+os.environ['OSGEO4W_ROOT'] = r"C:\Program Files\GDAL"
+osgeopath = os.environ['OSGEO4W_ROOT']
 
 try:
     qgisname = os.environ['QGISNAME']
 except KeyError:
     qgisname = 'qgis'
 
-osgeobin = os.path.join(osgeopath, 'bin')
-pythonroot = os.path.join(osgeopath, 'apps', "Python37")
-qgisroot = os.path.join(osgeopath, "apps", qgisname)
-qgisbin = os.path.join(qgisroot, "bin")
+#osgeobin = os.path.join(osgeopath, 'bin')
+#pythonroot = os.path.join(osgeopath, 'apps', "Python39")
+pythonroot = r'C:\ProgramData\miniconda3\envs\Roam-master'
+#qgisroot = os.path.join(osgeopath, "apps", qgisname)
+#qgisbin = os.path.join(qgisroot, "bin")
 qtbin = os.path.join(osgeopath, "apps", "qt5", "bin")
 qtplugins = os.path.join(osgeopath, "apps", "qt5", "plugins")
 
-qtimageforms = os.path.join(osgeopath, r'apps\qt5\plugins\imageformats\*')
-qtsqldrivers = os.path.join(osgeopath, r'apps\qt5\plugins\sqldrivers\*')
-qgisresources = os.path.join(osgeopath, "apps", qgisname, "resources")
-svgs = os.path.join(osgeopath, "apps", qgisname, "svg")
-qgispluginpath = os.path.join(osgeopath, "apps", qgisname, "plugins", "*provider.dll")
-gdalsharepath = os.path.join(osgeopath, 'share', 'gdal')
-projsharepath = os.path.join(osgeopath, 'share', 'proj')
+#qtimageforms = os.path.join(osgeopath, r'apps\qt5\plugins\imageformats\*')
+#qtsqldrivers = os.path.join(osgeopath, r'apps\qt5\plugins\sqldrivers\*')
+#qgisresources = os.path.join(osgeopath, "apps", qgisname, "resources")
+#svgs = os.path.join(osgeopath, "apps", qgisname, "svg")
+#qgispluginpath = os.path.join(osgeopath, "apps", qgisname, "plugins", "*provider.dll")
+gdalsharepath = r"C:\Program Files\GDAL\gdal-data"
+#projsharepath = os.path.join(osgeopath, 'share', 'proj')
+
+# Markus Mod
+os.environ['GDAL_DRIVER_PATH'] = r"C:\Program Files\GDAL\gdalplugins"
+os.environ['GDAL_DATA'] = gdalsharepath
+####
 
 appsrcopyFilesath = os.path.join(curpath, "src", 'roam')
 configmangerpath = os.path.join(curpath, "src", 'configmanager')
 
-sys.path.append(osgeobin)
-sys.path.append(qgisbin)
-sys.path.append(qtbin)
+#sys.path.append(osgeobin)
+#sys.path.append(qgisbin)
+#sys.path.append(qtbin)
 
 qtplugin_list = [
     # "bearer",
@@ -122,31 +151,32 @@ def get_data_files():
     ]
 
     # only copy the proj.db because that is all we need at the moment
-    files += format_paths(glob.glob(os.path.join(projsharepath, "proj.db")), new_folder=r"lib\proj")
+    #files += format_paths(glob.glob(os.path.join(projsharepath, "proj.db")), new_folder=r"lib\proj")
 
-    files += format_paths(glob.glob(os.path.join(qgisbin, "*.dll")))
-    files += format_paths(glob.glob(os.path.join(qgisroot, "plugins", "*.dll")), new_folder=r"lib\qgis\plugins")
-    files += format_paths(glob.glob(os.path.join(qgisresources, "*.db")), new_folder=r"lib\qgis\resources")
-    files += format_paths(glob.glob(os.path.join(qtbin, "*.dll")))
-    files += format_paths(glob.glob(qtsqldrivers), new_folder="sqldrivers")
+    # files += format_paths(glob.glob(os.path.join(qgisbin, "*.dll")))
+    # files += format_paths(glob.glob(os.path.join(qgisroot, "plugins", "*.dll")), new_folder=r"lib\qgis\plugins")
+    # files += format_paths(glob.glob(os.path.join(qgisresources, "*.db")), new_folder=r"lib\qgis\resources")
+    # files += format_paths(glob.glob(os.path.join(qtbin, "*.dll")))
+    # files += format_paths(glob.glob(qtsqldrivers), new_folder="sqldrivers")
 
-    utils = ['ogr2ogr.exe', 'ogrinfo.exe', 'gdalinfo.exe', 'NCSEcw.dll', "spatialite.dll",
-             os.path.join('gdalplugins', 'gdal_ECW_JP2ECW.dll')]
-    extrafiles = [os.path.join(osgeobin, path) for path in utils]
-    files += format_paths(extrafiles)
-    files += format_paths(glob.glob(os.path.join("lib", "*.dll")), new_folder="lib\qgis")
+    # utils = ['ogr2ogr.exe', 'ogrinfo.exe', 'gdalinfo.exe', 'NCSEcw.dll', "spatialite.dll",
+             # os.path.join('..', 'apps', 'gdal', 'lib', 'gdalplugins', 'gdal_ECW_JP2ECW.dll')]
+    # extrafiles = [os.path.join(osgeobin, path) for path in utils]
+    # files += format_paths(extrafiles)
+    # files += format_paths(glob.glob(os.path.join("lib", "*.dll")), new_folder="lib\qgis")
 
     files.append((os.path.join(pythonroot, "python3.dll"), "python3.dll"))
+    files.append((os.path.join(pythonroot, "python311.dll"), "python311.dll"))
     files.append((r"src\plugins", "plugins"))
     files.append((r"src\roam\templates", r"lib\roam\templates"))
     files.append((r"src\configmanager\templates", r"lib\configmanager\templates"))
-    files.append((svgs, r"lib\qgis\svg"))
+    #files.append((svgs, r"lib\qgis\svg"))
 
-    for qtplugin in qtplugin_list:
-        pluginpath = os.path.join(qtplugins, qtplugin)
-        files.append((pluginpath, r"lib\qtplugins\{}".format(qtplugin)))
+    # for qtplugin in qtplugin_list:
+        # pluginpath = os.path.join(qtplugins, qtplugin)
+        # files.append((pluginpath, r"lib\qtplugins\{}".format(qtplugin)))
 
-    files.append((gdalsharepath, "lib\gdal"))
+    # files.append((gdalsharepath, "lib\gdal"))
 
     versiontext = os.path.join(r"src\roam", "version.txt")
 
@@ -211,7 +241,7 @@ def buildqtfiles():
                 elif ext == '.ts':
                     newfile = file + '.qm'
                     try:
-                        if os.name is 'nt':
+                        if os.name == 'nt':
                             run('lrelease', filepath, '-qm', newfile)
                         else:
                             run('lrelease-qt5', filepath, '-qm', newfile)
@@ -241,23 +271,23 @@ class qtbuild(build):
 
 class package_final(build):
     def run(self):
-        buildfolder = r".\build\exe.win-amd64-3.7"
+        buildfolder = r".\build\exe.win-amd64-3.11"
         libfolder = os.path.join(buildfolder, "lib")
-        print("Moving python37.dll")
-        shutil.move(os.path.join(libfolder, "python37.dll"), os.path.join(buildfolder, "python37.dll"))
-        print("Removing imageformats")
-        shutil.rmtree(os.path.join(buildfolder, "imageformats"))
-        print("Removing sqldrivers")
-        shutil.rmtree(os.path.join(buildfolder, "sqldrivers"))
-        print("Removing platforms")
-        shutil.rmtree(os.path.join(buildfolder, "platforms"))
-        print("Removing pyqt5.uic extras")
-        shutil.rmtree(os.path.join(buildfolder, "PyQt5.uic.widget-plugins"))
-        print("Removing mediaservice")
-        shutil.rmtree(os.path.join(buildfolder, "mediaservice"))
-        print("Create projects folder")
-        os.mkdir(os.path.join(buildfolder, "projects"))
-
+        #print("Moving python39.dll")
+        #shutil.move(os.path.join(libfolder, "python39.dll"), os.path.join(buildfolder, "python39.dll"))
+        # print("Removing imageformats")
+        # shutil.rmtree(os.path.join(buildfolder, "imageformats"))
+        # print("Removing sqldrivers")
+        # shutil.rmtree(os.path.join(buildfolder, "sqldrivers"))
+        # print("Removing platforms")
+        # shutil.rmtree(os.path.join(buildfolder, "platforms"))
+        # print("Removing pyqt5.uic extras")
+        # shutil.rmtree(os.path.join(buildfolder, "PyQt5.uic.widget-plugins"))
+        # print("Removing mediaservice")
+        # shutil.rmtree(os.path.join(buildfolder, "mediaservice"))
+        #print("Create projects folder")
+        #os.mkdir(os.path.join(buildfolder, "projects"))
+        print("End of Build")
 
 class roamclean(clean):
     def run(self):
@@ -310,15 +340,21 @@ package_details = dict(
     options={
         "build_exe": {
             'packages': packages,
-            'includes': ["qgis", "PyQt5", "sip",
-                         "sentry_sdk.integrations.logging",
-                         "sentry_sdk.integrations.stdlib",
-                         "sentry_sdk.integrations.excepthook",
-                         "sentry_sdk.integrations.dedupe",
-                         "sentry_sdk.integrations.atexit",
-                         "sentry_sdk.integrations.modules",
-                         "sentry_sdk.integrations.argv",
-                         "sentry_sdk.integrations.threading",
+            'includes': ["qgis",
+                         "PyQt5",
+                         "osgeo",
+                         # "sentry_sdk.integrations.*",
+                         # "sentry_sdk.integrations.starlette",
+                         # "sentry_sdk.integrations.django",
+                         # "sentry_sdk.integrations.flask",
+                         # "sentry_sdk.integrations.logging",
+                         # "sentry_sdk.integrations.stdlib",
+                         # "sentry_sdk.integrations.excepthook",
+                         # "sentry_sdk.integrations.dedupe",
+                         # "sentry_sdk.integrations.atexit",
+                         # "sentry_sdk.integrations.modules",
+                         # "sentry_sdk.integrations.argv",
+                         # "sentry_sdk.integrations.threading",
                          ],
             'include_files': include_files,
             'excludes': excludes,

@@ -29,7 +29,7 @@ class LegendWidget(Ui_legendsWidget, QWidget):
         if not self.layerTree.layerTreeModel():
             return
         self.layerTree.layerTreeModel().setLegendMapViewData(
-            self.canvas.mapUnitsPerPixel(), self.canvas.mapSettings().outputDpi(), self.canvas.scale())
+            self.canvas.mapUnitsPerPixel(), int(self.canvas.mapSettings().outputDpi()), self.canvas.scale())
 
     def previewImagePressEvent(self, event):
         self.showmap.emit()

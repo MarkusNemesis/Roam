@@ -33,7 +33,7 @@ class Dialogbase(QDialog):
         y = self.parent().y()
         y += self.parent().height() / 2
         half = self.height() / 2
-        self.move(self.parent().geometry().x(), y - half)
+        self.move(self.parent().geometry().x(), int(y - half))
 
     def mousePressEvent(self, *args, **kwargs):
         self.close()

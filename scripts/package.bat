@@ -8,7 +8,7 @@ REM ----------------------------------------------------------------------------
 
 pushd %~dp0
 
-CALL setenv.bat
+REM CALL setenv.bat
 
 >..\build\package.log (
     ..\build.bat package

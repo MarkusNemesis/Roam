@@ -10,6 +10,7 @@ Build instructions:
 	2. Install all of the above packages
 	3. Install the latest GDAL package - https://gisinternals.com/release.php
 		Download the *-core and the latest win-amd64-py3.xx.msi, where the py version is as close to your environment's python version.
+		Download gdal-3.6.2-1930-x64-ecw-55.msi and install it (adjust for whatever versions of the other two packages you're installing)
 	4. in PyCharm terminal:
 		conda activate Roam-master
 		.\build.bat build

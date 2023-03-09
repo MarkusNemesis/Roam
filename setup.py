@@ -53,6 +53,7 @@ except KeyError:
     qgisname = 'qgis'
 
 #osgeobin = os.path.join(osgeopath, 'bin')
+gdalroot = r"C:\Program Files\GDAL"
 #pythonroot = os.path.join(osgeopath, 'apps', "Python39")
 pythonroot = r'C:\ProgramData\miniconda3\envs\Roam-master'
 #qgisroot = os.path.join(osgeopath, "apps", qgisname)
@@ -151,7 +152,7 @@ def get_data_files():
     ]
 
     # only copy the proj.db because that is all we need at the moment
-    #files += format_paths(glob.glob(os.path.join(projsharepath, "proj.db")), new_folder=r"lib\proj")
+    files += format_paths(glob.glob(os.path.join(gdalroot, 'projlib', "proj.db")), new_folder=r"lib\proj")
 
     # files += format_paths(glob.glob(os.path.join(qgisbin, "*.dll")))
     # files += format_paths(glob.glob(os.path.join(qgisroot, "plugins", "*.dll")), new_folder=r"lib\qgis\plugins")
@@ -159,10 +160,10 @@ def get_data_files():
     # files += format_paths(glob.glob(os.path.join(qtbin, "*.dll")))
     # files += format_paths(glob.glob(qtsqldrivers), new_folder="sqldrivers")
 
-    # utils = ['ogr2ogr.exe', 'ogrinfo.exe', 'gdalinfo.exe', 'NCSEcw.dll', "spatialite.dll",
-             # os.path.join('..', 'apps', 'gdal', 'lib', 'gdalplugins', 'gdal_ECW_JP2ECW.dll')]
-    # extrafiles = [os.path.join(osgeobin, path) for path in utils]
-    # files += format_paths(extrafiles)
+    utils = {'ogr2ogr.exe', 'ogrinfo.exe', 'gdalinfo.exe', 'NCSEcw.dll', "spatialite.dll",
+             os.path.join('gdalplugins', 'gdal_ECW_JP2ECW.dll')}
+    extrafiles = [os.path.join(gdalroot, path) for path in utils]
+    files += format_paths(extrafiles)
     # files += format_paths(glob.glob(os.path.join("lib", "*.dll")), new_folder="lib\qgis")
 
     files.append((os.path.join(pythonroot, "python3.dll"), "python3.dll"))
@@ -273,20 +274,24 @@ class package_final(build):
     def run(self):
         buildfolder = r".\build\exe.win-amd64-3.11"
         libfolder = os.path.join(buildfolder, "lib")
-        #print("Moving python39.dll")
-        #shutil.move(os.path.join(libfolder, "python39.dll"), os.path.join(buildfolder, "python39.dll"))
-        # print("Removing imageformats")
-        # shutil.rmtree(os.path.join(buildfolder, "imageformats"))
-        # print("Removing sqldrivers")
-        # shutil.rmtree(os.path.join(buildfolder, "sqldrivers"))
-        # print("Removing platforms")
-        # shutil.rmtree(os.path.join(buildfolder, "platforms"))
-        # print("Removing pyqt5.uic extras")
-        # shutil.rmtree(os.path.join(buildfolder, "PyQt5.uic.widget-plugins"))
-        # print("Removing mediaservice")
-        # shutil.rmtree(os.path.join(buildfolder, "mediaservice"))
-        #print("Create projects folder")
-        #os.mkdir(os.path.join(buildfolder, "projects"))
+        print("Removing pyqt5.uic extras")
+        shutil.rmtree(os.path.join(buildfolder, "PyQt5.uic.widget-plugins"))
+        print("Create projects folder")
+        os.mkdir(os.path.join(buildfolder, "projects"))
+        print("Tidy DLLs")
+        # Move all root folder DLLs into lib
+        for file in glob.glob(os.path.join(buildfolder, '*.dll')):
+            # File ignore list. Add dll file names here to leave them in the root folder
+            skipfiles = {
+                os.path.join(buildfolder, "python311.dll"),
+                os.path.join(buildfolder, "python3.dll"),
+                os.path.join(buildfolder, "zlib.dll")
+            }
+            if file in skipfiles:
+                continue
+            print(file)
+            shutil.move(file, os.path.join(buildfolder, 'lib'))
+        
         print("End of Build")
 
 class roamclean(clean):

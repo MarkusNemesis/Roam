@@ -124,25 +124,25 @@ class GPSMarker(QgsMapCanvasItem):
 
         painter.setBrush(self.pointbrush)
         painter.setPen(self.pointpen)
-        y = 0 - halfSize
-        x = rect.width() / 2 - halfSize
-        line = QLine(x, y, x, rect.height() - halfSize)
-        y = rect.height() / 2 - halfSize
-        x = 0 - halfSize
-        line2 = QLine(x, y, rect.width() - halfSize, y)
+        y = int(0 - halfSize)
+        x = int(rect.width() / 2 - halfSize)
+        line = QLine(x, y, x, int(rect.height() - halfSize))
+        y = int(rect.height() / 2 - halfSize)
+        x = int(0 - halfSize)
+        line2 = QLine(x, y, int(rect.width() - halfSize), y)
 
         # Arrow
         p = QPolygonF()
-        p.append(QPoint(0 - halfSize, 0))
-        p.append(QPoint(0, -self.size))
-        x = rect.width() - halfSize
+        p.append(QPoint(int(0 - halfSize), 0))
+        p.append(QPoint(0, int(-self.size)))
+        x = int(rect.width() - halfSize)
         p.append(QPoint(x, 0))
         p.append(QPoint(0, 0))
 
         offsetp = QPolygonF()
-        offsetp.append(QPoint(0 - halfSize, 0))
-        offsetp.append(QPoint(0, -self.size))
-        x = rect.width() - halfSize
+        offsetp.append(QPoint(int(0 - halfSize), 0))
+        offsetp.append(QPoint(0, int(-self.size)))
+        x = int(rect.width() - halfSize)
         offsetp.append(QPoint(x, 0))
         offsetp.append(QPoint(0, 0))
 

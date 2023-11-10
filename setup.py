@@ -291,7 +291,7 @@ class package_final(build):
                 continue
             print(file)
             shutil.move(file, os.path.join(buildfolder, 'lib'))
-        
+
         print("End of Build")
 
 class roamclean(clean):
